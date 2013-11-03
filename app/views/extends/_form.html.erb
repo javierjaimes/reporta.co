@@ -1,0 +1,24 @@
+<%= form_for(@extend) do |f| %>
+  <% if @extend.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@extend.errors.count, "error") %> prohibited this extend from being saved:</h2>
+
+      <ul>
+      <% @extend.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :body %><br>
+    <%= f.text_area :body %>
+  </div>
+  <div class="field">
+    <%= f.hidden_field :user_id, :value => current_user.id %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

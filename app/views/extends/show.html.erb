@@ -1,0 +1,15 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Body:</strong>
+  <%= @extend.body %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @extend.user %>
+</p>
+
+<%= link_to 'Edit', edit_extend_path(@extend) %> |
+<%= link_to 'Back', extends_path %>
+<%= link_to 'Back', story_path %>

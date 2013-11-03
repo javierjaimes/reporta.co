@@ -1,0 +1,29 @@
+<h1>Listing extends</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Body</th>
+      <th>User</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @extends.each do |extend| %>
+      <tr>
+        <td><%= extend.body %></td>
+        <td><%= extend.user %></td>
+        <td><%= link_to 'Show', extend %></td>
+        <td><%= link_to 'Edit', edit_extend_path(extend) %></td>
+        <td><%= link_to 'Destroy', extend, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Extend', new_extend_path %>
