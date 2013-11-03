@@ -24,11 +24,21 @@ class ExtendsController < ApplicationController
   # POST /extends
   # POST /extends.json
   def create
-    if params[:extend][:user_id] && User.find( params[:extend][:user_id]) != current_user
+    extend_params.delete( :user_id ) if @user = User.find( params[:extend][:user_id])
+    extend_params.delete( :story_id ) if @story = Story.find( params[:extend][:story_id])
+
+    if !@user.persisted? &&  @user != current_user
       raise "error"
     end
 
+    if !@story.persisted?
+      raise "error"
+    end
+
+
     @extend = Extend.new(extend_params)
+    @extend.user = @user
+    @extend.story = @story
 
     respond_to do |format|
       if @extend.save

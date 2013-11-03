@@ -7,8 +7,12 @@
 
 <p>
   <strong>User:</strong>
-  <%= @story.user %>
+  <%= @story.user.email %>
 </p>
 
+<% @story.extends.each do |extend| %>
+    <p><%= extend.body %></p>
+<% end %>
+
 <%= link_to 'Edit', edit_story_path(@story) %> |
-<%= link_to 'Back', stories_path %>
+<%= link_to 'Back', stories_path( ) %>

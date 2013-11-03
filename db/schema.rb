@@ -11,15 +11,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131103014149) do
+ActiveRecord::Schema.define(version: 20131103021025) do
 
   create_table "extends", force: true do |t|
     t.text     "body"
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "story_id"
   end
 
+  add_index "extends", ["story_id"], name: "index_extends_on_story_id"
   add_index "extends", ["user_id"], name: "index_extends_on_user_id"
 
   create_table "stories", force: true do |t|
