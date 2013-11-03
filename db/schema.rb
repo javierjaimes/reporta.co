@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131103021025) do
+ActiveRecord::Schema.define(version: 20131103151352) do
 
   create_table "extends", force: true do |t|
     t.text     "body"
@@ -23,6 +23,16 @@ ActiveRecord::Schema.define(version: 20131103021025) do
 
   add_index "extends", ["story_id"], name: "index_extends_on_story_id"
   add_index "extends", ["user_id"], name: "index_extends_on_user_id"
+
+  create_table "followers", force: true do |t|
+    t.integer  "user_id"
+    t.integer  "story_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "followers", ["story_id"], name: "index_followers_on_story_id"
+  add_index "followers", ["user_id"], name: "index_followers_on_user_id"
 
   create_table "stories", force: true do |t|
     t.text     "body"

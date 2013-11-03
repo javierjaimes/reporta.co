@@ -14,5 +14,15 @@
     <p><%= extend.body %></p>
 <% end %>
 
+<% if !@follower.nil? %>
+follower
+<% else %>
+<%= form_for(@new_follower) do |f| %>
+  <%= f.hidden_field :story_id, :value => @story.id %>
+  <%= f.hidden_field :user_id, :value => current_user.id %>
+  <%= f.submit 'Seguir historia' %>
+<% end %>
+<% end %>
+
 <%= link_to 'Edit', edit_story_path(@story) %> |
 <%= link_to 'Back', stories_path( ) %>

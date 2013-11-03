@@ -10,6 +10,8 @@ class StoriesController < ApplicationController
   # GET /stories/1
   # GET /stories/1.json
   def show
+    @follower = @story.followers.find_by( user: current_user, story: @story )
+    @new_follower = @story.followers.build if @follower.nil?
   end
 
   # GET /stories/new

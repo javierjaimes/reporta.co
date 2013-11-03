@@ -1,5 +1,6 @@
 Reportaco::Application.routes.draw do
 
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
@@ -10,6 +11,8 @@ Reportaco::Application.routes.draw do
   end
 
   resources :extends
+
+  resources :followers, only: [ :create, :destroy ]
 
   authenticated :user do
     root to: "dashboard#index", as: :authenticated_root
