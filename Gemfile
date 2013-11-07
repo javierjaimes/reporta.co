@@ -30,6 +30,9 @@ gem 'jbuilder', '~> 1.2'
 # Use devise as authentication for the website
 gem "devise", "~> 3.1.1"
 
+# Use redis for realtime behavior
+gem "redis", "~> 3.0.5"
+
 # Use Rspec for TDD
 group :development, :test do
   gem 'rspec-rails', '~> 2.0'

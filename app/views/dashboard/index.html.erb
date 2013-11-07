@@ -1,2 +1,17 @@
 <h1>Dashboard#index</h1>
 <p>Find me in app/views/dashboard/index.html.erb</p>
+<% content_for :final_scripts do %>
+  <script src="http://localhost:8080/socket.io/socket.io.js"></script>
+  <script>
+    var socket = io.connect( 'http://localhost:8080' );
+    socket.on( 'welcome', function( data ){
+      console.log( data );
+      //socket.emit( 'start', { msg: 'hola mundo' });
+    })
+
+    socket.on( 'new_extend', function( data ){
+      extend = JSON.parse( data );
+      console.log( extend.id );
+    })
+  </script>
+<% end %>
