@@ -23,7 +23,7 @@ module ExtendConcerns
           id: story.id,
           body: story.body[0..15] + "..."
         },
-        user: {
+        owner: {
           id: user.id,
           email: user.email
         },

@@ -1,8 +1,11 @@
 class Story < ActiveRecord::Base
+
+  include StoryConcerns
+
   belongs_to :user
   has_many :extends
   has_many :followers, inverse_of: :story
 
   validates :body, :user, presence: true
-  validates :body, length: { minimum: 140, maximun: 240 }
+  validates :body, length: { minimum:  10, maximun: 240 }
 end

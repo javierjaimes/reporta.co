@@ -1,18 +1,4 @@
-<div class="ui page grid">
-  <div class="four wide column">
-    <div class="ui fluid vertical menu">
-      <div class="header item">
-        Relevante
-        <span class="ui teal label"><sup>1</sup>New</span>
-      </div>
-      <div class="text item">
-        <a>Join now</a> and save $10 on a pro membership!
-      </div>
-      <div class="item">
-        <p><a>Join tomorrow</a> and save $5 on pro.</p>
-      </div>
-    </div>
-  </div>
+
 <div class="six wide column">
    <!-- j<h2 class="ui header">
     <i class="settings icon"></i>
@@ -25,7 +11,7 @@
   </h2> -->
  <div class="ui fluid vertical menu">
   <div class="header item">
-    Siguiendo
+    Historias!
   </div>
 
   <% if !@user_stories.nil? %>
@@ -45,33 +31,43 @@
 <div class="six wide column">
   <div class="ui fluid vertical menu">
     <div class="header item">
-      En desarrollo
-      <span id="ui-story-notification" class="ui teal label" style="display: none;"><sup>0</sup>New</span>
+      En desarrollo!
     </div>
     <% if !@stories.nil? %>
       <% @stories.each do |story| %>
         <div class="text item">
-          <div class="circular ui icon button"><i class="tasks icon"></i> </div>
+          <div class="ui icon button">
+            <i class="settings icon"></i>
+          </div>
           <p><%= story.body %></p>
+          
         </div>
+          <div class="3 fluid blue small icon ui  buttons">
+            <div class="ui button">
+              <i class="pause icon "></i>
+            </div>
+            <div class="ui button">
+              <i class="play icon "></i>
+            </div>
+            <div class="ui button">
+              <i class="shuffle icon "></i>
+            </div>
+          </div>
       <% end %>
     <% else %>
       No hay historias
     <% end %>
   </div>
 </div>
-</div>
 
 <% content_for :final_scripts do %>
   <%= javascript_include_tag "underscore-min" %>
   <script src="http://localhost:8080/socket.io/socket.io.js"></script>
   <script>
-    var stories = 0;
     var user = <%= current_user.id %>;
     var socket = io.connect( 'http://localhost:8080' );
     socket.on( 'welcome', function( data ){
       console.log( data );
-      stories = 0;
       //socket.emit( 'start', { msg: 'hola mundo' });
     })
 
@@ -81,14 +77,6 @@
       if (_.contains( extend.followers, user ) && extend.owner.id != user ){
         console.log( 'alert me' );
       }
-    })
-
-    socket.on( 'new_story', function( data ){
-      console.log( 'new_story', data );
-      var element = $( '#ui-story-notification' );
-      stories = stories + 1;
-      element.find( 'sup' ).text( stories );
-      element.show();
     })
   </script>
 <% end %>

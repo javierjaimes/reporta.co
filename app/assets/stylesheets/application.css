@@ -8,6 +8,21 @@
  * You're free to add application-wide styles to this file and they'll appear at the top of the
  * compiled file, but it's generally better to create a new file per style scope.
  *
+ *= require 'semantic'
  *= require_self
  *= require_tree .
  */
+
+h1, h2, h3, h4, h5 {
+  font-family: "Source Sans Pro", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+}
+
+.ui.vertical.menu .item > .icon:not(.input) {
+  float: right;
+  width: auto;
+  margin: auto;
+}
+
+.ui.icon.buttons .button > .icon, .ui.icon.button > .icon {
+  vertical-align: middle;
+}
