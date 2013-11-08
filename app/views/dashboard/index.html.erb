@@ -23,12 +23,13 @@
       </div>
     </div>
   </h2> -->
-  <div class="ui fluid vertical menu">
+  <div id="following_stories" class="ui fluid vertical menu">
     <div class="header item">
       Siguiendo
       <span id="ui-following-notification" class="ui teal label" style="display: none;"><sup>0</sup>New</span>
     </div>
 
+    <div class="ui content">
     <% if !@following.nil? %>
       <% @following.each do |follow| %>
         <div class="text item">
@@ -47,35 +48,38 @@
     <% else %>
       No hay historias
     <% end %>
+    </div>
 
  </div>
 </div>
 
 
-<div class="six wide column">
-  <div class="ui fluid vertical menu">
+<div  class="six wide column">
+  <div id="developing_stories" class="ui fluid vertical menu">
     <div class="header item">
       En desarrollo
       <span id="ui-story-notification" class="ui teal label" style="display: none;"><sup>0</sup>New</span>
     </div>
+    <div class="ui content">
     <% if !@stories.nil? %>
       <% @stories.each do |story| %>
-        <div class="text item">
+        <div class="story text item">
           <p><%= story.body %></p>
           <div class="small ui buttons">
-            <button class=" ui button">
+            <a class="follow ui button" data-story="<%= story.id %>">
               <i class="bolt icon"></i>
               Seguir
-            </button>
-            <button class="ui button">
+            </a>
+            <a class="ui button">
               <i class="add sign icon"></i>
-            </button>
+            </a>
           </div>
         </div>
       <% end %>
     <% else %>
       No hay historias
     <% end %>
+    </div>
   </div>
 </div>
 </div>
@@ -120,6 +124,40 @@
       if( element.is( ':hidden' )){
         element.show();
       }
+    })
+
+    //Ajax Setup
+    $.ajaxSetup({
+      headers: {
+        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+      }
+    })
+
+    $( '.follow' ).click( function( event ){
+      event.preventDefault();
+      var element = $( event.currentTarget );
+      var story = element.data( 'story' );
+      console.log( story );
+
+      $.ajax({
+        url: '/followers',
+        dataType: 'json',
+        method: 'POST',
+        data: { follower: { user_id: user, story_id: story } },
+        success: function( data ){
+          if( data.status == true ){
+            console.log( 'Status', data );
+            element.addClass( 'active' );
+            element.html( '<i class="bolt icon"></i>Detener' );
+            var old_story = element.parents( '.story' );
+            var story = old_story.clone();
+            story.prependTo( '#following_stories .content' );
+            old_story.remove();
+            console.log( story );
+          }
+        }
+      })
+
     })
   </script>
 <% end %>
