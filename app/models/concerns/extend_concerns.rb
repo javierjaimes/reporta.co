@@ -4,9 +4,6 @@ module ExtendConcerns
   included do
     after_save do | extend |
 
-      puts 'REPORTABLE'
-      puts extend
-
       id = extend.id
       story = extend.story
       user = story.user
@@ -27,7 +24,8 @@ module ExtendConcerns
           id: user.id,
           email: user.email
         },
-        followers: followers
+        followers: followers,
+        emit: 'new_extend'
       }
       
       REDIS.publish 'r-live', message.to_json

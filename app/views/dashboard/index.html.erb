@@ -23,20 +23,30 @@
       </div>
     </div>
   </h2> -->
- <div class="ui fluid vertical menu">
-  <div class="header item">
-    Siguiendo
-  </div>
+  <div class="ui fluid vertical menu">
+    <div class="header item">
+      Siguiendo
+      <span id="ui-following-notification" class="ui teal label" style="display: none;"><sup>0</sup>New</span>
+    </div>
 
-  <% if !@user_stories.nil? %>
-    <% @user_stories.each do |story| %>
-      <div class="item">
-        <p><%= story.body %></p>
-      </div>
+    <% if !@following.nil? %>
+      <% @following.each do |follow| %>
+        <div class="text item">
+          <p><%= follow.story.body %></p>
+          <div class="small ui buttons">
+            <a class="ui active button">
+              <i class="bolt icon"></i>
+              Detener
+            </a>
+            <%= link_to( extend_story_path( follow.story ), :class => 'ui button' ) do %>
+              <i class="add sign icon"></i>
+            <% end %>
+          </div> 
+        </div>
+      <% end %>
+    <% else %>
+      No hay historias
     <% end %>
-  <% else %>
-    No hay historias
-  <% end %>
 
  </div>
 </div>
@@ -51,8 +61,16 @@
     <% if !@stories.nil? %>
       <% @stories.each do |story| %>
         <div class="text item">
-          <div class="circular ui icon button"><i class="tasks icon"></i> </div>
           <p><%= story.body %></p>
+          <div class="small ui buttons">
+            <button class=" ui button">
+              <i class="bolt icon"></i>
+              Seguir
+            </button>
+            <button class="ui button">
+              <i class="add sign icon"></i>
+            </button>
+          </div>
         </div>
       <% end %>
     <% else %>
@@ -67,19 +85,30 @@
   <script src="http://localhost:8080/socket.io/socket.io.js"></script>
   <script>
     var stories = 0;
+    var extends_stories = 0;
     var user = <%= current_user.id %>;
     var socket = io.connect( 'http://localhost:8080' );
     socket.on( 'welcome', function( data ){
-      console.log( data );
+      console.log( 'connect', data );
       stories = 0;
+      extends_stories = 0;
       //socket.emit( 'start', { msg: 'hola mundo' });
     })
 
     socket.on( 'new_extend', function( data ){
-      extend = JSON.parse( data );
-      console.log( extend.id, extend.followers );
-      if (_.contains( extend.followers, user ) && extend.owner.id != user ){
+      extend = data;
+      //extend = JSON.parse( data );
+      //console.log( extend.id, extend.followers );
+      var element = $( '#ui-following-notification' );
+      var contains = _.contains( extend.followers, user );
+      if ( contains ){
         console.log( 'alert me' );
+        extends_stories = extends_stories + 1; 
+        element.find( 'sup' ).text( extends_stories );
+
+        if( element.is( ':hidden' ) ){
+          element.show();
+        }
       }
     })
 
@@ -88,7 +117,9 @@
       var element = $( '#ui-story-notification' );
       stories = stories + 1;
       element.find( 'sup' ).text( stories );
-      element.show();
+      if( element.is( ':hidden' )){
+        element.show();
+      }
     })
   </script>
 <% end %>
