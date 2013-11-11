@@ -32,12 +32,16 @@
     <div class="ui content">
     <% if !@following.nil? %>
       <% @following.each do |follow| %>
-        <div class="text item">
-          <p><%= follow.story.body %></p>
+        <div class="following text item" data-follow="<%= follow.story.id %>">
+          <p><%=  " #{follow.story.body}... Reportada por #{follow.story.user.name} hace #{time_elapsed follow.story.created_at}."   %></p>
           <div class="small ui buttons">
             <a class="ui active button">
               <i class="bolt icon"></i>
               Detener
+            </a>
+            <a href="#" class="follow ui button">
+              <i class="volume up icon"></i>
+              <sup>0</sup>
             </a>
             <%= link_to( extend_story_path( follow.story ), :class => 'ui button' ) do %>
               <i class="add sign icon"></i>
@@ -63,16 +67,19 @@
     <div class="ui content">
     <% if !@stories.nil? %>
       <% @stories.each do |story| %>
-        <div class="story text item">
-          <p><%=  "#{story.user.name} reporta: #{story.body}"   %></p>
+        <div class="story text item" data-created="<%= story.created_at %>">
+          <p>
+            <%= story.user.name %> reporto hace
+            <span class="time"><%= time_elapsed( story.created_at ) %></span>:
+            <%= story.body %>
           <div class="small ui buttons">
-            <a class="follow ui button" data-story="<%= story.id %>">
+            <%= link_to extend_story_path( story ), class: 'follow ui button', data: { story: story.id } do %>
               <i class="bolt icon"></i>
               Seguir
-            </a>
-            <a class="ui button">
+            <% end %>
+            <%= link_to extend_story_path( story ), class: 'ui button' do %>
               <i class="add sign icon"></i>
-            </a>
+            <% end %>
           </div>
         </div>
       <% end %>
@@ -105,16 +112,24 @@
       extend = data;
       //extend = JSON.parse( data );
       //console.log( extend.id, extend.followers );
-      var element = $( '#ui-following-notification' );
+      //var element = $( '#ui-following-notification' );
       var contains = _.contains( extend.followers, user );
       if ( contains ){
-        console.log( 'alert me' );
+        console.log( 'alert me', data );
         extends_stories = extends_stories + 1; 
-        element.find( 'sup' ).text( extends_stories );
+        //element.find( 'sup' ).text( extends_stories );
 
-        if( element.is( ':hidden' ) ){
+        /*if( element.is( ':hidden' ) ){
           element.show();
-        }
+        }*/
+
+        var element = $( 'div[data-follow="' + extend.story.id  + '"]' );
+        var notifier = element.find( 'a.follow' ) 
+
+        var notifications = +notifier.find( 'sup' ).text();
+        notifier.find( 'sup' ).text( notifications + 1 ).show();
+        notifier.addClass( 'blue' );
+        console.log( element );
       }
     })
 
@@ -154,7 +169,7 @@
           if( data.status == true ){
             for( i in data.data ){
               var html = '<div class="story text item">' +
-                '<p>' + data.data[ i ].user.name + ' reporta: ' + data.data[ i ].body + '</p>' +
+                '<p>' + data.data[ i ].user.name + ' reporta hace '  + data.data[ i ].time_elapsed + ': '  + data.data[ i ].body + '</p>' +
                 '<div class="small ui buttons">' +
                   '<a class="follow ui button" data-story="' + data.data[i].id + '">' +
                     '<i class="bolt icon"></i>' +
@@ -205,5 +220,51 @@
       })
 
     })
+
+    function update_time( collection ){
+      console.log( 'update', collection );
+      $( 'div.story' ).each( function( key, element ){
+        //console.log( key, element );
+        element = $( element );
+        story_date = new Date(element.data( 'created' ));
+        current_date = new Date();
+        minutes = 1000 * 60;
+        interval = current_date.getTime() - story_date.getTime();
+        time_elapsed = Math.floor(interval / minutes);
+        console.log( time_elapsed );
+
+        if( time_elapsed > 0 && time_elapsed <= 10 ){
+          text_message = 'unos minutos';
+        }
+
+        if( time_elapsed > 10 && time_elapsed <= 45 ){
+          text_message = time_elapsed + ' minutos';
+        }
+
+        if( time_elapsed > 45 && time_elapsed <= 90 ){
+          text_message = 'aproximadamente 1 hora';
+        }
+
+        if( time_elapsed > 90 && time_elapsed <= 150 ){
+          text_message = 'aproximadamente 2 hora';
+        }
+
+        if( time_elapsed > 150 && time_elapsed <= 210 ){
+          text_message = 'aproximadamente 3 hora';
+        }
+
+        if( time_elapsed > 210 && time_elapsed <= 270 ){
+          text_message = 'aproximadamente 4 hora';
+        }
+
+        if( time_elapsed > 270  ){
+          text_message = 'mas de 5 horas';
+        }
+
+        element.find( '.time' ).text( text_message );
+      } )
+    }
+      var interval_stories = window.setInterval( update_time, 2500, 'stories' );
+      //var interval_following = window.setInterval( update_time, 1000, 'following' );
   </script>
 <% end %>
