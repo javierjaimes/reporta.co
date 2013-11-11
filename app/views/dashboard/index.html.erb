@@ -58,13 +58,13 @@
   <div id="developing_stories" class="ui fluid vertical menu">
     <div class="header item">
       En desarrollo
-      <span id="ui-story-notification" class="ui teal label" style="display: none;"><sup>0</sup>New</span>
+      <span id="ui-story-notification" class="stories ui teal label" style="display: none;"><sup>0</sup>New</span>
     </div>
     <div class="ui content">
     <% if !@stories.nil? %>
       <% @stories.each do |story| %>
         <div class="story text item">
-          <p><%= story.body %></p>
+          <p><%=  "#{story.user.name} reporta: #{story.body}"   %></p>
           <div class="small ui buttons">
             <a class="follow ui button" data-story="<%= story.id %>">
               <i class="bolt icon"></i>
@@ -89,6 +89,8 @@
   <script src="http://localhost:8080/socket.io/socket.io.js"></script>
   <script>
     var stories = 0;
+    var stories_for_load = [];
+
     var extends_stories = 0;
     var user = <%= current_user.id %>;
     var socket = io.connect( 'http://localhost:8080' );
@@ -121,6 +123,10 @@
       var element = $( '#ui-story-notification' );
       stories = stories + 1;
       element.find( 'sup' ).text( stories );
+
+      //added to array for load
+      stories_for_load.push( data.id );
+
       if( element.is( ':hidden' )){
         element.show();
       }
@@ -131,6 +137,46 @@
       headers: {
         'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
       }
+    })
+
+
+    //click for refresh a dashboard
+    $( '.stories' ).click( function( event ){
+      event.preventDefault();
+      console.log( event );
+      $.ajax({
+        url: '/stories/latest',
+        dataType: 'json',
+        method: 'POST',
+        data: { refresh: { stories: stories_for_load }},
+        success: function( data ){
+          console.log( data );
+          if( data.status == true ){
+            for( i in data.data ){
+              var html = '<div class="story text item">' +
+                '<p>' + data.data[ i ].user.name + ' reporta: ' + data.data[ i ].body + '</p>' +
+                '<div class="small ui buttons">' +
+                  '<a class="follow ui button" data-story="' + data.data[i].id + '">' +
+                    '<i class="bolt icon"></i>' +
+                    'Seguir' +
+                  '</a>' +
+                  '<a class="ui button">' +
+                    '<i class="add sign icon"></i>' +
+                  '</a>' +
+                '</div>' +
+              '</div>';
+
+              $( html ).prependTo(  '#developing_stories .content'  );
+            }
+
+            stories = 0;
+            stories_for_load = []
+            var element = $( '#ui-story-notification' );
+            element.hide();
+            console.log( 'render the news data' );
+          }
+        }
+      })
     })
 
     $( '.follow' ).click( function( event ){

@@ -3,7 +3,6 @@
 <head>
   <title>Reportaco</title>
   <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
-  <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
   <%= csrf_meta_tags %>
 </head>
 <body>
@@ -20,13 +19,12 @@
           <%= link_to(new_story_path, :class => 'item' ) do %>
             <i class="add icon"></i> Crear historia
           <% end %>
-          <a class="item">
-          </a>
           <div class="right menu">
+                <%= link_to( current_user.email , destroy_user_session_path, :method => :delete, :class => 'ui item') %>
             <div class="ui dropdown item">
               <%= current_user.email %> <i class="icon dropdown"></i>
               <div class="menu">
-                <%= link_to( current_user.email , destroy_user_session_path, :method => :delete, :class => 'ui item') %>        
+                <%= link_to( current_user.email , destroy_user_session_path, :method => :delete, :class => 'ui item') %>
               </div>
             </div>
           </div>
@@ -41,7 +39,7 @@
   <%= yield :aside %>
   <%= yield %>
 
-
+  <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
   <%= yield :final_scripts  %>
 
 </body>
