@@ -222,7 +222,7 @@
     })
 
     function update_time( collection ){
-      console.log( 'update', collection );
+      console.log( 'update time' );
       $( 'div.story' ).each( function( key, element ){
         //console.log( key, element );
         element = $( element );
@@ -231,7 +231,6 @@
         minutes = 1000 * 60;
         interval = current_date.getTime() - story_date.getTime();
         time_elapsed = Math.floor(interval / minutes);
-        console.log( time_elapsed );
 
         if( time_elapsed > 0 && time_elapsed <= 10 ){
           text_message = 'unos minutos';
@@ -264,7 +263,7 @@
         element.find( '.time' ).text( text_message );
       } )
     }
-      var interval_stories = window.setInterval( update_time, 2500, 'stories' );
+      var interval_stories = window.setInterval( update_time, 1000*60, 'stories' );
       //var interval_following = window.setInterval( update_time, 1000, 'following' );
   </script>
 <% end %>
