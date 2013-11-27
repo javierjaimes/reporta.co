@@ -1,27 +1,71 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Reportaco</title>
-  <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
-  <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
-  <%= csrf_meta_tags %>
-</head>
-<body>
-  
-  <div class="ui page grid">
+  <head>
+    <title>Reportaco</title>
+    <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
+    <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+    <%= csrf_meta_tags %>
+  </head>
+  <body>
 
-    <div class="row">
+    <div class="ui fixed transparent blue inverted main menu">
+      <div class="container">
+        <div class="title item">
+          <b>Reporta</b>.co
+        </div>
+
+        <div class="section ui dropdown link item">
+          <span class="count">Acerca de</span>
+          <div class="menu">
+
+            <div class="item">
+              <a href="/index.html">1. Introduction</a>
+            </div>
+
+            <div class="active item">
+              <a href="/collection.html">2. UI Collections</a>
+            </div>
+
+            <div class="item">
+              <a href="/element.html">3. UI Elements</a>
+            </div>
+
+            <div class="item">
+              <a href="/module.html">4. UI Modules</a>
+            </div>
+
+          </div>
+        </div>
+
+
+        <div class="right menu">
+          <a class="icon facebook item" title="View project on Github" href="https://github.com/quirkyinc/semantic">
+            <i class="icon facebook"></i>
+          </a>
+          <a class="icon twitter item" title="View project on Github" href="https://github.com/quirkyinc/semantic">
+            <i class="icon twitter"></i>
+          </a>
+          <a class="icon help item" title="View project on Github" href="https://github.com/quirkyinc/semantic">
+            <i class="icon help"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="ui page grid">
+
+      <div class="row">
+
+      </div>
 
     </div>
 
-  </div>
+
+    <%= yield :aside %>
+    <%= yield %>
 
 
-  <%= yield :aside %>
-  <%= yield %>
+    <%= yield :final_scripts  %>
 
-
-  <%= yield :final_scripts  %>
-
-</body>
+  </body>
 </html>

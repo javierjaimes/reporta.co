@@ -1,17 +1,41 @@
-<h2>Sign in</h2>
+<div class="center aligned ui page grid segment">
+    <div class="six wide column">
 
-<%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
-  <div><%= f.label :email %><br />
-  <%= f.email_field :email, :autofocus => true %></div>
+      <div class="ui form segment">
+      <h2 class="left aligned ui header">Iniciar Sesion</h2>
 
-  <div><%= f.label :password %><br />
-  <%= f.password_field :password %></div>
+      <%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
+        <div class="field">
+          <div class="ui left labeled icon input">
+            <%= f.email_field :email, :placeholder => "Su correo electronico", :autofocus => true %>
+            <i class="user icon"></i>
+          </div>
+        </div>
 
-  <% if devise_mapping.rememberable? -%>
-    <div><%= f.check_box :remember_me %> <%= f.label :remember_me %></div>
-  <% end -%>
+        <div class="field">
+          <div class="ui left labeled icon input">
+            <%= f.password_field :password, :placeholder => "Su clave" %>
+            <i class="lock icon"></i>
+          </div>
+        </div>
 
-  <div><%= f.submit "Sign in" %></div>
-<% end %>
+        <div class="field">
+          <% if devise_mapping.rememberable? -%>
+            <div><%= f.check_box :remember_me %> <%= f.label :remember_me %></div>
+          <% end -%>
+        </div>
 
-<%= render "users/shared/links" %>
+        <div class="left aligned field">
+          <%= f.button :type => "submit", :class=>"ui teal right labeled icon button" do %>
+            Iniciar Session
+            <i class="right long arrow icon"></i>
+          <% end %>
+        </div>
+      <% end %>
+
+      <%= render "users/shared/links" %>
+
+      </div>
+    </div>
+</div>
+

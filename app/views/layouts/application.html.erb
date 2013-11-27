@@ -1,46 +1,41 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Reportaco</title>
-  <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
-  <%= csrf_meta_tags %>
-</head>
-<body>
-  
-  <div class="ui page grid">
+  <head>
+    <title>Reportaco</title>
+    <%= stylesheet_link_tag    "http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700|Open+Sans:300italic,400,300,700" %>
+    <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
+    <%= csrf_meta_tags %>
+  </head>
+  <body id="feed">
 
-    <div class="row">
+    <div class="ui large inverted vertical sidebar menu active" style="display:none;">
+      <a class="active item">
+        <%= current_user.name %> <span class="ui label">213</span>
+      </a>
 
-      <div class="sixteen wide column">
-        <div class="ui secondary pointing menu">
-          <a class="active item">
-            <i class="home icon"></i> Home
-          </a>
-          <%= link_to(new_story_path, :class => 'item' ) do %>
-            <i class="add icon"></i> Crear historia
-          <% end %>
-          <div class="right menu">
-                <%= link_to( current_user.email , destroy_user_session_path, :method => :delete, :class => 'ui item') %>
-            <div class="ui dropdown item">
-              <%= current_user.email %> <i class="icon dropdown"></i>
-              <div class="menu">
-                <%= link_to( current_user.email , destroy_user_session_path, :method => :delete, :class => 'ui item') %>
-              </div>
-            </div>
-          </div>
-        </div>    
+      <a class="item">
+        <i class="edit icon"></i> Perfil
+      </a>
 
-      </div>    
+      <%= link_to(new_story_path, :class => 'item' ) do %>
+        <i class="add icon"></i> Nueva
+      <% end %>
+
+      <a class="item">
+        <i class="bookmark icon"></i> Mis Historias
+      </a>
+      
+      <%= link_to( destroy_user_session_path, :method => :delete, :class => 'item')  do %>
+        <i class="sign out icon"></i> Salir
+      <% end %>
     </div>
 
-  </div>
 
 
-  <%= yield :aside %>
-  <%= yield %>
+    <%= yield %>
 
-  <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
-  <%= yield :final_scripts  %>
+    <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+    <%= yield :final_scripts  %>
 
-</body>
+  </body>
 </html>

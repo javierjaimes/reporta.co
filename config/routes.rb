@@ -4,11 +4,12 @@ Reportaco::Application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   post 'stories/latest' => 'refresh#stories'
-  post 'stories/following' => 'refresh#following'
+  post 'stories/:id/latest' => 'refresh#following'
 
   resources :stories do
     member do
       get 'new' => 'extends#new', as: :extend 
+      get 'extends' => 'extends#paginate', as: :paginate_extends
     end
   end
 

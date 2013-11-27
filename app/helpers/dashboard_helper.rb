@@ -8,16 +8,24 @@ module DashboardHelper
     when 10..45
       [seconds.to_i, 'minutos'].join ' '
     when 46..90
-      'aproximadamente 1 hora'
+      'Mas de 1h'
     when 91..150
-      'aproximadamente 2 hora'
+      'Mas de 2h'
     when 151..210
-      'aproximadamente 3 hora'
+      'Mas de 3h'
     when 211..270
-      'aproximadamente 4 horas'
+      'Mas de 4h'
     else
-      'mas de 5 horas'
+      'Mas de 5h'
     end
 
+  end
+
+  def is_active key
+    if key == 0
+      'active'
+    else
+      ''
+    end
   end
 end

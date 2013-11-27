@@ -14,7 +14,10 @@
         <div class="column">
           <div class="ui blue inverted menu">
             <div class="title item">
-              inicio
+              <%= link_to  new_session_path(:user), :class => '' do %>
+                Iniciar Sesion
+              <% end %>
+                <br />
             </div>
 
             <div class="right menu">
@@ -41,27 +44,11 @@
       <div class="ten wide column">
         <div class="ui three column stackable grid">
           <div class="column">
-            <div class="ui header">Courses</div>
+            <div class="ui header">Acerca de</div>
             <div class="ui inverted link list">
-              <a class="item">Registration</a>
-              <a class="item">Course Calendar</a>
-              <a class="item">Professors</a>
-            </div>
-          </div>
-          <div class="column">
-            <div class="ui header">Library</div>
-            <div class="ui inverted link list">
-              <a class="item">A-Z</a>
-              <a class="item">Most Popular</a>
-              <a class="item">Recently Changed</a>
-            </div>
-          </div>
-          <div class="column">
-            <div class="ui header">Community</div>
-            <div class="ui inverted link list">
-              <a class="item">BBS</a>
-              <a class="item">Careers</a>
-              <a class="item">Privacy Policy</a>
+              <a class="item">Que es?</a>
+              <a class="item">Como funciona?</a>
+              <a class="item">QUienes somos?</a>
             </div>
           </div>
         </div>
@@ -69,10 +56,10 @@
       <div class="six wide right floated aligned column">
         <h3 class="ui header">Contact Us</h3>
         <addr>
-        237 Catberry Road <br>
-        Milton Keynes, London <br>
+        Avenida Siempre Viva (Calle 86B #49A 41) <br>
+        Barrio La Patria, Bogota <br>
         </addr>
-        <p>(404) 867-5309</p>
+        <p>+57 (304) 438-1074</p>
       </div>
     </div>
 

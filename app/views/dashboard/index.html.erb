@@ -1,104 +1,119 @@
-<div class="ui page grid">
-  <div class="four wide column">
-    <div class="ui fluid vertical menu">
-      <div class="header item">
-        Relevante
-        <span class="ui teal label"><sup>1</sup>New</span>
-      </div>
-      <div class="text item">
-        <a>Join now</a> and save $10 on a pro membership!
-      </div>
-      <div class="item">
-        <p><a>Join tomorrow</a> and save $5 on pro.</p>
-      </div>
+<div class="ui celled grid">
+  <div class="seven wide middle column">
+    <div class="ui right floated black launch button">
+      <i class="list layout icon"></i> Menu
     </div>
-  </div>
-<div class="six wide column">
-   <!-- j<h2 class="ui header">
-    <i class="settings icon"></i>
-    <div class="content">
-      Historias en curso!
-      <div class="sub header">
-        Administra tus historias en seguimiento.
-      </div>
+    <h2 class="ui header">
+      <i class="list layout icon"></i>
+      Dashboard
+    </h2>
+    <div class="ui tabular filter menu">
+      <a class="item active" data-tab="unread">
+        En desarrollo
+        <div class="notification floating ui red circular label" data-notifier="stories" data-action="latest" data-content="unread" style="display:none;">0</div>
+      </a>
+      <a class="item" data-tab="saved">Siguiendo</a>
+      <a class="item" data-tab="all">Relevante</a>
     </div>
-  </h2> -->
-  <div id="following_stories" class="ui fluid vertical menu">
-    <div class="header item">
-      Siguiendo
-      <span id="ui-following-notification" class="ui teal label" style="display: none;"><sup>0</sup>New</span>
+    <div class="ui divided inbox selection list tab active" data-tab="unread">
+      <% if !@stories.nil? %>
+      <div class="container">
+        <% @stories.each_with_index do | story, key | %>
+          <%= link_to( story_path( story ), :data => { created: story.created_at.to_s }, :class => is_active( key ) + ' item' )  do %>
+            <div class="left floated ui star rating active">
+              <i class="icon"></i>
+            </div>
+            <div class="right floated date"><%= time_elapsed( story.created_at ) %></div>
+            <div class="description"><%= story.body[0..50] %>...</div>
+          <% end %>
+        <% end %>
+
+      </div>
+        <div class="ui icon buttons">
+        <% if @stories.current_page <= 1 %>
+          <%= link_to "#{stories_path()}?page=#{@stories.current_page}", :class => 'previous ui disabled button', :data => { :container => 'unread' } do  %>
+            <i class="left arrow icon"></i>
+          <% end %>
+        <% end %>
+        <% if @stories.current_page < @first_exts.total_pages %>
+          <%= link_to "#{stories_path()}?page=#{@stories.current_page+1}", :class => 'next ui button', :data => { :container => 'unread' } do  %>
+            <i class="right arrow icon"></i>
+          <% end %>
+        <% end %>
+        </div>
+
+      <% else %>
+        No hay historias
+      <% end %>
+    </div>
+    <div class="ui divided inbox selection list tab" data-tab="saved">
+      <% if !@following.nil? %>
+        <% @following.each_with_index do | follow, key | %>
+          <%= link_to( story_path( follow.story ), :data => { created: follow.story.created_at.to_s }, :class => is_active( key ) + ' item' )  do %>
+            <div class="left floated ui star rating active">
+              <i class="icon"></i>
+            </div>
+            <div class="right floated date"><%= time_elapsed( follow.story.created_at ) %></div>
+            <div class="description"><%= follow.story.body[0..50] %>...</div>
+          <% end %>
+        <% end %>
+      <% else %>
+        No hay historias
+      <% end %>
+    </div>
+    <div class="ui divided inbox selection list tab" data-tab="all">
+      <p>Muy pronto!</p>
     </div>
 
-    <div class="ui content">
-    <% if !@following.nil? %>
-      <% @following.each do |follow| %>
-        <div class="following text item" data-follow="<%= follow.story.id %>">
-          <p><%=  " #{follow.story.body}... Reportada por #{follow.story.user.name} hace #{time_elapsed follow.story.created_at}."   %></p>
-          <div class="small ui buttons">
-            <a class="ui active button">
-              <i class="bolt icon"></i>
-              Detener
-            </a>
-            <a href="#" class="follow ui button">
-              <i class="volume up icon"></i>
-              <sup>0</sup>
-            </a>
-            <%= link_to( extend_story_path( follow.story ), :class => 'ui button' ) do %>
-              <i class="add sign icon"></i>
-            <% end %>
-          </div> 
+  </div>
+  <div class="nine wide right column">
+    <h1 class="ui header"><%= @first.body[0..50] %>...</h1>
+    <div class="ui divider"></div>
+    <%= link_to 'Ampliar', extend_story_path( @first ), :class=>'circular ui basic button' %>
+    <%= link_to follower_path( @follower ), :data => { :story => @first.id, :following => ( @active == 'active' )? 'true':'false' }, :class=>'follow circular ui basic toggle button ' + @active do %>
+      <i class="bullhorn icon"></i>
+      <%= (@active == 'active')? 'Detener':'Seguir' %>
+    <% end %>
+    <button class=" notifier circular ui icon basic button" data-notifier="<%= @first.id %>" style="position:relative; <%= ( @active == 'active' )? '':'display:none;'  %>">
+      <i class="refresh icon"></i>
+      <div class="circular floating ui teal label" style="display: none;">0</div>
+    </button>
+    <div class="ui divider"></div>
+
+    <div class="extends" data-story="<%= @first.id  %>">
+      <% @first_exts.each do | extend | %>
+        <div class="ui raised segment">
+          <div class="ui ribbon label"><%= time_elapsed( extend.created_at ) %></div>
+          <p><%= extend.body %> por <%= extend.user.name %></p>
         </div>
       <% end %>
-    <% else %>
-      No hay historias
-    <% end %>
+      <div class="paginate">
+        <% if @first_exts.current_page < @first_exts.total_pages %>
+           <%= link_to "Siguiente", "#{paginate_extends_story_path(@first)}?page=#{@first_exts.current_page+1}"  %>
+         <% end %>
+       </div>
     </div>
 
- </div>
-</div>
-
-
-<div  class="six wide column">
-  <div id="developing_stories" class="ui fluid vertical menu">
-    <div class="header item">
-      En desarrollo
-      <span id="ui-story-notification" class="stories ui teal label" style="display: none;"><sup>0</sup>New</span>
-    </div>
-    <div class="ui content">
-    <% if !@stories.nil? %>
-      <% @stories.each do |story| %>
-        <div class="story text item" data-created="<%= story.created_at %>">
-          <p>
-            <%= story.user.name %> reporto hace
-            <span class="time"><%= time_elapsed( story.created_at ) %></span>:
-            <%= story.body %>
-          <div class="small ui buttons">
-            <%= link_to extend_story_path( story ), class: 'follow ui button', data: { story: story.id } do %>
-              <i class="bolt icon"></i>
-              Seguir
-            <% end %>
-            <%= link_to extend_story_path( story ), class: 'ui button' do %>
-              <i class="add sign icon"></i>
-            <% end %>
-          </div>
-        </div>
-      <% end %>
-    <% else %>
-      No hay historias
-    <% end %>
-    </div>
   </div>
 </div>
-</div>
+
 
 <% content_for :final_scripts do %>
-  <%= javascript_include_tag "underscore-min" %>
+  <%= javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js" %>
+  <%= javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/jquery.address/1.6/jquery.address.js" %>
   <script src="http://localhost:8080/socket.io/socket.io.js"></script>
   <script>
+
+    //Set Up
+    var current_tab = 'unread';
+    var CURRENT_STORY = '<%= @first.id %>';
+
     var stories = 0;
     var stories_for_load = [];
 
     var extends_stories = 0;
+    var extends_stories_for_load = [];
+
     var user = <%= current_user.id %>;
     var socket = io.connect( 'http://localhost:8080' );
     socket.on( 'welcome', function( data ){
@@ -110,34 +125,32 @@
 
     socket.on( 'new_extend', function( data ){
       extend = data;
-      //extend = JSON.parse( data );
-      //console.log( extend.id, extend.followers );
-      //var element = $( '#ui-following-notification' );
+      console.log( extend );
+
       var contains = _.contains( extend.followers, user );
       if ( contains ){
-        console.log( 'alert me', data );
         extends_stories = extends_stories + 1; 
-        //element.find( 'sup' ).text( extends_stories );
+        extends_stories_for_load.push( extend.id );
+        console.log( extends_stories_for_load );
 
-        /*if( element.is( ':hidden' ) ){
-          element.show();
-        }*/
+        var notifier = $( '.notifier[data-notifier="' + extend.story.id + '"]' );
+        var notifications = +notifier.find( '.label' ).text();
+        var label = notifier.find( '.label' );
+        label.text( notifications + 1 );
 
-        var element = $( 'div[data-follow="' + extend.story.id  + '"]' );
-        var notifier = element.find( 'a.follow' ) 
+        if( label.is( ':hidden') ){
+          label.show();
+        }
 
-        var notifications = +notifier.find( 'sup' ).text();
-        notifier.find( 'sup' ).text( notifications + 1 ).show();
-        notifier.addClass( 'blue' );
-        console.log( element );
       }
     })
 
     socket.on( 'new_story', function( data ){
       console.log( 'new_story', data );
-      var element = $( '#ui-story-notification' );
+      //var element = $( '#ui-story-notification' );
+      var element = $( 'div[data-notifier="stories"]' );
       stories = stories + 1;
-      element.find( 'sup' ).text( stories );
+      element.text( stories );
 
       //added to array for load
       stories_for_load.push( data.id );
@@ -156,68 +169,131 @@
 
 
     //click for refresh a dashboard
-    $( '.stories' ).click( function( event ){
+    $( 'div.notification' ).click( function( event ){
       event.preventDefault();
-      console.log( event );
+
+      var content = $( event.currentTarget ).data( 'content' );
+      var action = $( event.currentTarget ).data( 'action' );
+      var notifier = $( event.currentTarget );
+
       $.ajax({
-        url: '/stories/latest',
+        url: '/stories/' + action,
         dataType: 'json',
         method: 'POST',
         data: { refresh: { stories: stories_for_load }},
         success: function( data ){
           console.log( data );
           if( data.status == true ){
-            for( i in data.data ){
-              var html = '<div class="story text item">' +
-                '<p>' + data.data[ i ].user.name + ' reporta hace '  + data.data[ i ].time_elapsed + ': '  + data.data[ i ].body + '</p>' +
-                '<div class="small ui buttons">' +
-                  '<a class="follow ui button" data-story="' + data.data[i].id + '">' +
-                    '<i class="bolt icon"></i>' +
-                    'Seguir' +
-                  '</a>' +
-                  '<a class="ui button">' +
-                    '<i class="add sign icon"></i>' +
-                  '</a>' +
+            var stories = data.data;
+            for( i in stories ){
+              var html = '<a class="item" data-created="' + stories[ i ].created_at + '" href="/stories/80">' +
+                '<div class="left floated ui star rating active">' +
+                  '<i class="icon"></i>' +
                 '</div>' +
-              '</div>';
+                '<div class="right floated date">' + stories[i].time_elapsed + '</div>' +
+                '<div class="description">' + stories[i].body.substr(0,55) + '...</div>'
+              '</a>';
 
-              $( html ).prependTo(  '#developing_stories .content'  );
+              $( html ).prependTo(  'div[data-tab="' + content + '"]'  );
             }
 
             stories = 0;
             stories_for_load = []
-            var element = $( '#ui-story-notification' );
-            element.hide();
-            console.log( 'render the news data' );
+            notifier.hide();
           }
         }
       })
     })
 
-    $( '.follow' ).click( function( event ){
-      event.preventDefault();
-      var element = $( event.currentTarget );
-      var story = element.data( 'story' );
-      console.log( story );
 
-      $.ajax({
-        url: '/followers',
-        dataType: 'json',
-        method: 'POST',
-        data: { follower: { user_id: user, story_id: story } },
-        success: function( data ){
-          if( data.status == true ){
-            console.log( 'Status', data );
-            element.addClass( 'active' );
-            element.html( '<i class="bolt icon"></i>Detener' );
-            var old_story = element.parents( '.story' );
-            var story = old_story.clone();
-            story.prependTo( '#following_stories .content' );
-            old_story.remove();
-            console.log( story );
+
+    //load the latest extends
+    $( '.notifier' ).click( function( event ){
+      event.preventDefault();
+      var notifier = $( this );
+      var story = notifier.data( 'notifier' );
+      console.log(  notifier.data( 'notifier' ) );
+
+        $.ajax({
+          url: '/stories/' +  story + '/latest',
+          dataType: 'json',
+          method: 'POST',
+          data: { refresh: { stories: extends_stories_for_load  }},
+          success: function( data ){
+            console.log( 'the data', data );
+            var exts = data.data;
+            for( var i in exts ){
+              var html = '<div class="ui raised segment">' +
+                '<div class="ui ribbon label">' + exts[ i ].time_elapsed + '</div>' +
+                '<p>' + exts[ i ].body + ' por ' + exts[i].user.name + '</p>' +
+                + '</div>';
+              $( html ).prependTo( '.extends[data-story="' + story + '"]' ); 
+            }
+
+            //set the array to null
+            extends_stories_for_load = [];
+
+            //hide de element
+            var label = notifier.find( '.label' );
+            label.hide();
+            label.text( '0' );
           }
-        }
-      })
+        })
+    })
+
+    $( '.follow' ).click( function( event ){
+
+
+      event.preventDefault();
+      var element = $( this );
+      var story = element.data( 'story' );
+      var following = element.attr( 'data-following' );
+
+
+      if( following == 'true' ){
+        $.ajax({
+          url: element.attr( 'href' ),
+          dataType: 'json',
+          method: 'DELETE',
+          success: function( data ){
+            console.log( data );
+
+            if( data.status == true ){
+              $( '.notifier[data-notifier="' + story + '"]' ).hide();
+
+              element.removeClass( 'active' );
+              element.attr( 'data-following', 'false' );
+              element.attr( 'href', '/followers/' );
+              element.html( 'Seguir' );
+              $( '<i class="bullhorn icon"></i>' ).prependTo( element );
+            }else{
+              console.log(  'Tuvimos un error' );
+            }
+
+          }
+        })
+
+      }else{
+        $.ajax({
+          url: '/followers',
+          dataType: 'json',
+          method: 'POST',
+          data:  {follower: { user_id: user, story_id: story }},
+          success: function( data ){
+            if( data.status == true ){
+              console.log( 'Status', data );
+
+              $( '.notifier[data-notifier="' + story + '"]' ).show();
+
+              element.attr( 'href', '/followers/' + data.object.id );
+              element.addClass( 'active' );
+              element.attr( 'data-following', 'true' );
+              element.html( 'Detener' );
+              $( '<i class="bullhorn icon"></i>' ).prependTo( element );
+            }
+          }
+        })
+      }
 
     })
 
@@ -263,7 +339,152 @@
         element.find( '.time' ).text( text_message );
       } )
     }
-      var interval_stories = window.setInterval( update_time, 1000*60, 'stories' );
-      //var interval_following = window.setInterval( update_time, 1000, 'following' );
+    //var interval_stories = window.setInterval( update_time, 1000*60, 'stories' );
+    //var interval_following = window.setInterval( update_time, 1000, 'following' );
+
+    //Enable tabs
+    var STORIES_CURRENT_PAGE = 1;
+    $( function(){
+      $('.filter.menu .item')
+        .tab();
+
+      $('.extends').infinitescroll({
+        navSelector  : ".extends div.paginate",
+        // selector for the paged navigation (it will be hidden)
+        nextSelector : ".extends div.paginate a:first",
+        // default: false
+        loadingText  : "Loading new posts...", 
+        dataType: 'json',
+        appendCallback: false,
+        animate: true,
+        //extraScrollPx: 650,
+        debug : false
+         // enable debug messaging ( to console.log )
+       }, function( json, opt ){
+        console.log( 'Cargo', json );
+        var exts = json.data;
+        if ( json.current_page <= json.total_pages ){
+          //$( '.seven' ).css({ position:'fixed', background: '#fff' })
+          //$( '.extends' ).parents( '.nine' ).addClass( 'right floated' );
+
+          for( var i in exts ){
+            var html = '<div class="ui raised segment">' +
+              '<div class="ui ribbon label">' + exts[ i ].time_elapsed + '</div>' +
+              '<p>' + exts[ i ].body + ' por ' + exts[i].user.name + '</p>' +
+              + '</div>';
+            $( html ).appendTo( '.extends[data-story="' + CURRENT_STORY + '"]' ); 
+          }
+        }else{
+          console.log( 'Ya termino el pager' );
+        }
+      });
+
+      //Load new pages
+      $( 'a.next' ).click( function( event ){
+        event.preventDefault();
+
+        var element = $( this );
+        var container = element.data( 'container' );
+
+        console.log( 'Load new stories' );
+        $.ajax({
+          url:  element.attr( 'href' ),
+          method: 'GET',
+          dataType: 'json',
+          success: function( data ){
+            console.log( 'data', data  );
+
+            var html = '',
+            stories = data.data,
+            current_page = data.current_page,
+            total_pages = data.total_pages;
+
+            console.log( current_page, total_pages );
+
+            if( current_page <= total_pages ){
+              for( var i in stories ){
+                html += '<a href="/stories/' + stories[ i ].id + '" data-created="' + stories[i].created_at  + '" class="item">' +
+                  '<div class="left floated ui star rating active">' +
+                    '<i class="icon"></i>' +
+                  '</div>' +
+                  '<div class="right floated date">' + stories[i].time_elapsed + '</div>' +
+                  '<div class="description">' + stories[i].body.substr(0,50) + '...</div>' +
+                '</a>';
+              }
+
+              $( '.tab[data-tab="' + container + '"] .container' ).html( html );
+              element.attr( 'href', '/stories/?page=' + ( current_page + 1 ) );
+
+              if( current_page == total_pages ){
+                element.addClass( 'disabled' );
+              }
+
+              if( current_page > 1 ){
+                $( 'a.previous' ).removeClass( 'disabled' );
+              }
+
+              STORIES_CURRENT_PAGE += 1;
+            }else{
+              console.log( 'Ya todas las paginas se cargaron disabled button' );
+              element.addClass( 'disabled' );
+            }
+
+          }
+        })
+      })
+
+
+      $( 'a.previous' ).click( function( event ){
+        event.preventDefault();
+
+        var element = $( this );
+        var container = element.data( 'container' );
+
+        console.log( 'Load new stories' );
+        $.ajax({
+          url:  '/stories/?page=' + (STORIES_CURRENT_PAGE - 1),
+          method: 'GET',
+          dataType: 'json',
+          success: function( data ){
+            console.log( 'data', data  );
+
+            var html = '',
+            stories = data.data,
+            current_page = data.current_page,
+            total_pages = data.total_pages;
+
+            console.log( current_page, total_pages );
+
+              console.log( 'Entro' );
+
+              for( var i in stories ){
+                html += '<a href="/stories/' + stories[ i ].id + '" data-created="' + stories[i].created_at  + '" class="item">' +
+                  '<div class="left floated ui star rating active">' +
+                    '<i class="icon"></i>' +
+                  '</div>' +
+                  '<div class="right floated date">' + stories[i].time_elapsed + '</div>' +
+                  '<div class="description">' + stories[i].body.substr(0,50) + '...</div>' +
+                '</a>';
+              }
+
+              $( '.tab[data-tab="' + container + '"] .container' ).html( html );
+              element.attr( 'href', '/stories/?page=' + ( STORIES_CURRENT_PAGE - 1 ) );
+
+              if( current_page == 1 ){
+                element.addClass( 'disabled' );
+              }
+
+              if( current_page < total_pages ){
+                $( 'a.next' ).removeClass( 'disabled' );
+              }
+              console.log( 'Estas en la pagina inicial' );
+              if( STORIES_CURRENT_PAGE <= 1 ){
+                element.addClass( 'disabled' );
+              }
+
+          }
+        })
+      })
+    })
   </script>
 <% end %>

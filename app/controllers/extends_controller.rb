@@ -6,6 +6,18 @@ class ExtendsController < ApplicationController
   def index
     @extends = Extend.all
   end
+  #
+  # GET /sotory/1/extends
+  # GET /story/1/extends.json
+  def paginate
+    @extends = Extend.order( 'created_at DESC' ).where( story_id: params[ :id ] ).paginate( :page => params[ :page ], :per_page => 5 )
+    puts @extends.current_page
+    puts @extends.total_pages
+    respond_to do |format|
+      format.json { render action: 'paginate', status: :ok }
+    end
+    @extends = Extend.all
+  end
 
   # GET /extends/1
   # GET /extends/1.json

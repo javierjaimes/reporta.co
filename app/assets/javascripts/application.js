@@ -12,6 +12,7 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require jquery.infinitescroll.min
 //= require semantic
 //= require turbolinks
-//= require_tree .
+//= require dashboard
