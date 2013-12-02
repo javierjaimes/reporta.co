@@ -1,5 +1,28 @@
-<h1>New extend</h1>
+<div class="ui page grid basic segment">
+  <div class="column">
+    <%= render 'form' %>
+  </div>
+</div>
+<%= content_for :footer_scripts do %>
+  <%= javascript_include_tag "//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" %>
+  <script>
+    $( 'form' ).on( 'submit', function( event ){
+      event.preventDefault();
+      console.log( $( this ).serialize() );
 
-<%= render 'form' %>
-
-<%= link_to 'Back', extends_path %>
+      $.ajax({
+        url: $( this ).attr( 'action' ),
+        method: 'POST',
+        dataType: 'json',
+        data: $( this ).serialize(),
+        success: function( data ){
+          if( data.status == true ){
+            parent.$.fancybox.close();
+          }else{
+            console.log( 'ALgo paso...' );
+          }
+        }
+      })
+    })
+  </script>
+<% end %>

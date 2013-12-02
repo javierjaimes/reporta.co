@@ -19,7 +19,7 @@
       <% if !@stories.nil? %>
       <div class="container">
         <% @stories.each_with_index do | story, key | %>
-          <%= link_to( story_path( story ), :data => { created: story.created_at.to_s }, :class => is_active( key ) + ' item' )  do %>
+          <%= link_to( story_path( story ), :data => { created: story.created_at.to_s }, :data => { :story => story.id }, :class => is_active( key ) + ' story item' )  do %>
             <div class="left floated ui star rating active">
               <i class="icon"></i>
             </div>
@@ -83,7 +83,7 @@
   <div class="nine wide right column">
     <h1 class="ui header"><%= @first.body[0..50] %>...</h1>
     <div class="ui divider"></div>
-    <%= link_to 'Ampliar', extend_story_path( @first ), :class=>'circular ui basic button' %>
+    <%= link_to 'Ampliar', extend_story_path( @first ), :data => { 'fancybox-type' => "iframe"}, :class=>'fancy circular ui basic button' %>
     <%= link_to follower_path( @follower ), :data => { :story => @first.id, :following => ( @active == 'active' )? 'true':'false' }, :class=>'follow circular ui basic toggle button ' + @active do %>
       <i class="bullhorn icon"></i>
       <%= (@active == 'active')? 'Detener':'Seguir' %>
@@ -115,6 +115,7 @@
 <% content_for :final_scripts do %>
   <%= javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js" %>
   <%= javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/jquery.address/1.6/jquery.address.js" %>
+  <%= javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.pack.js?v=2.1.5" %>
   <script src="http://localhost:8080/socket.io/socket.io.js"></script>
   <script>
 
@@ -360,6 +361,9 @@
       $('.filter.menu .item')
         .tab();
 
+      $('.ui.sidebar')
+        .sidebar('attach events', '.launch.button');
+
       $('.extends').infinitescroll({
         navSelector  : ".extends div.paginate",
         // selector for the paged navigation (it will be hidden)
@@ -516,6 +520,28 @@
           }
         })
       })
+
+      $( 'a.story' ).on( 'click', function( event ){
+        event.preventDefault();
+        console.log( 'click to load a new story' )  ;
+      } )
+
+
+      //Fancybox for publish
+      $(document).ready(function() {
+        $(".fancy").fancybox({
+          maxWidth  : 800,
+          maxHeight : 600,
+          fitToView : false,
+          width   : '70%',
+          height    : '70%',
+          autoSize  : false,
+          closeClick  : false,
+          openEffect  : 'none',
+          closeEffect : 'none'
+        });
+      });
+
     })
   </script>
 <% end %>

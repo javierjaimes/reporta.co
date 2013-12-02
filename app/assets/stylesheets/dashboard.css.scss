@@ -34,6 +34,11 @@ body {
   overflow: visible;
 }
 
+.ui.sidebar {
+  width: 275px !important;
+  margin-left: -275px !important;
+}
+
 /*-------------------
         Grid
 --------------------*/

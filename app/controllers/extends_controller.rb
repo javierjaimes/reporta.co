@@ -27,6 +27,7 @@ class ExtendsController < ApplicationController
   # GET /extends/new
   def new
     @extend = Extend.new
+    render layout: 'stories' 
   end
 
   # GET /extends/1/edit

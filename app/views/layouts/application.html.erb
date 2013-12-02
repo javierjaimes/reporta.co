@@ -3,21 +3,22 @@
   <head>
     <title>Reportaco</title>
     <%= stylesheet_link_tag    "http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700|Open+Sans:300italic,400,300,700" %>
+    <%= stylesheet_link_tag    "//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.css?v=2.1.5" %>
     <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
     <%= csrf_meta_tags %>
   </head>
   <body id="feed">
 
-    <div class="ui large inverted vertical sidebar menu active" style="display:none;">
+    <div class="ui large inverted vertical sidebar menu " >
       <a class="active item">
-        <%= current_user.name %> <span class="ui label">213</span>
+        <%= (current_user.name.nil? == true)? 'Jhon Doe': current_user.name %>
       </a>
 
       <a class="item">
         <i class="edit icon"></i> Perfil
       </a>
 
-      <%= link_to(new_story_path, :class => 'item' ) do %>
+      <%= link_to( new_story_path(), :data => { 'fancybox-type' => "iframe"}, :class => 'fancy item' ) do %>
         <i class="add icon"></i> Nueva
       <% end %>
 
@@ -33,6 +34,7 @@
 
 
     <%= yield %>
+
 
     <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
     <%= yield :final_scripts  %>
