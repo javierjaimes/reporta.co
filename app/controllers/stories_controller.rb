@@ -4,7 +4,11 @@ class StoriesController < ApplicationController
   # GET /stories
   # GET /stories.json
   def index
-    @stories = Story.order( 'stories.created_at DESC' ).paginate( page: params[ :page ], per_page: 10 )
+    if params.key? :filter
+      @stories = Story.joins(:followers).order( 'stories.created_at DESC' ).where( :followers => { :user_id  => current_user.id } ).paginate( :page => params[:page], :per_page => 10 )
+    else
+      @stories = Story.order( 'stories.created_at DESC' ).paginate( page: params[ :page ], per_page: 10 )
+    end
   end
 
   # GET /stories/1

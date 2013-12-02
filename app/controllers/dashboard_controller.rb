@@ -11,7 +11,7 @@ class DashboardController < ApplicationController
 
     @active = ( @follower.nil? == false )? 'active':''
 
-    @following = Follower.includes( :story ).order( 'stories.created_at DESC' ).where( user: current_user ).limit( 10 )
+    @following = Follower.includes( :story ).order( 'stories.created_at DESC' ).where( user: current_user ).paginate( :page => params[:page], :per_page => 10 )
     @user_stories = Story.where( user: current_user )
   end
 end

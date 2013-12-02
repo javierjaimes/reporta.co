@@ -31,12 +31,12 @@
       </div>
         <div class="ui icon buttons">
         <% if @stories.current_page <= 1 %>
-          <%= link_to "#{stories_path()}?page=#{@stories.current_page}", :class => 'previous ui disabled button', :data => { :container => 'unread' } do  %>
+          <%= link_to "#{stories_path()}?page=#{@stories.current_page}", :class => 'previous ui disabled button', :data => { :filter => 'false', :container => 'unread' } do  %>
             <i class="left arrow icon"></i>
           <% end %>
         <% end %>
         <% if @stories.current_page < @first_exts.total_pages %>
-          <%= link_to "#{stories_path()}?page=#{@stories.current_page+1}", :class => 'next ui button', :data => { :container => 'unread' } do  %>
+          <%= link_to "#{stories_path()}?page=#{@stories.current_page+1}", :class => 'next ui button', :data => { :filter => 'false', :container => 'unread' } do  %>
             <i class="right arrow icon"></i>
           <% end %>
         <% end %>
@@ -48,6 +48,7 @@
     </div>
     <div class="ui divided inbox selection list tab" data-tab="saved">
       <% if !@following.nil? %>
+        <div class="container">
         <% @following.each_with_index do | follow, key | %>
           <%= link_to( story_path( follow.story ), :data => { created: follow.story.created_at.to_s }, :class => is_active( key ) + ' item' )  do %>
             <div class="left floated ui star rating active">
@@ -57,6 +58,19 @@
             <div class="description"><%= follow.story.body[0..50] %>...</div>
           <% end %>
         <% end %>
+        </div>
+        <div class="ui icon buttons">
+        <% if @stories.current_page <= 1 %>
+          <%= link_to "#{stories_path()}?filter=following&page=#{@stories.current_page}", :class => 'previous ui disabled button', :data => { :filter => 'following', :container => 'saved' } do  %>
+            <i class="left arrow icon"></i>
+          <% end %>
+        <% end %>
+        <% if @stories.current_page < @first_exts.total_pages %>
+          <%= link_to "#{stories_path()}?filter=following&page=#{@stories.current_page+1}", :class => 'next ui button', :data => { :filter => 'following', :container => 'saved' } do  %>
+            <i class="right arrow icon"></i>
+          <% end %>
+        <% end %>
+        </div>
       <% else %>
         No hay historias
       <% end %>
@@ -342,8 +356,6 @@
     //var interval_stories = window.setInterval( update_time, 1000*60, 'stories' );
     //var interval_following = window.setInterval( update_time, 1000, 'following' );
 
-    //Enable tabs
-    var STORIES_CURRENT_PAGE = 1;
     $( function(){
       $('.filter.menu .item')
         .tab();
@@ -379,12 +391,29 @@
         }
       });
 
+
+      //parse href attribute for get valus
+      function getUrlVars( url ){
+        var vars = [], hash;
+        var hashes = url.slice(url.indexOf('?') + 1).split('&');
+        for(var i = 0; i < hashes.length; i++)
+        {
+          hash = hashes[i].split('=');
+          vars.push(hash[0]);
+          vars[hash[0]] = hash[1];
+        }
+        return vars;
+      }
+
       //Load new pages
       $( 'a.next' ).click( function( event ){
         event.preventDefault();
 
+
         var element = $( this );
         var container = element.data( 'container' );
+        var filter = element.data( 'filter' );
+
 
         console.log( 'Load new stories' );
         $.ajax({
@@ -406,24 +435,28 @@
                 html += '<a href="/stories/' + stories[ i ].id + '" data-created="' + stories[i].created_at  + '" class="item">' +
                   '<div class="left floated ui star rating active">' +
                     '<i class="icon"></i>' +
-                  '</div>' +
+                    '</div>' +
                   '<div class="right floated date">' + stories[i].time_elapsed + '</div>' +
                   '<div class="description">' + stories[i].body.substr(0,50) + '...</div>' +
-                '</a>';
+                  '</a>';
               }
 
               $( '.tab[data-tab="' + container + '"] .container' ).html( html );
-              element.attr( 'href', '/stories/?page=' + ( current_page + 1 ) );
+              if( filter  ){
+                element.attr( 'href', '/stories/?filter=following&page=' + ( current_page + 1 ) );
+              }else{
+                element.attr( 'href', '/stories/?page=' + ( current_page + 1 ) );
+              }
 
               if( current_page == total_pages ){
                 element.addClass( 'disabled' );
               }
 
               if( current_page > 1 ){
-                $( 'a.previous' ).removeClass( 'disabled' );
+                element.prev().removeClass( 'disabled' );
+                //$( 'a.previous' ).removeClass( 'disabled' );
               }
 
-              STORIES_CURRENT_PAGE += 1;
             }else{
               console.log( 'Ya todas las paginas se cargaron disabled button' );
               element.addClass( 'disabled' );
@@ -439,10 +472,15 @@
 
         var element = $( this );
         var container = element.data( 'container' );
+        var filter = element.data( 'filter' );
 
-        console.log( 'Load new stories' );
+        var loaded_page = +getUrlVars( element.next().attr( 'href' ) )[ 'page' ] - 1; 
+
+        var url = ( filter != false )? '/stories/?filter=following&page=' : '/stories/?page=';
+        console.log( loaded_page, 'loaded_page' );
+
         $.ajax({
-          url:  '/stories/?page=' + (STORIES_CURRENT_PAGE - 1),
+          url:  url + (loaded_page - 1),
           method: 'GET',
           dataType: 'json',
           success: function( data ){
@@ -453,34 +491,27 @@
             current_page = data.current_page,
             total_pages = data.total_pages;
 
-            console.log( current_page, total_pages );
-
-              console.log( 'Entro' );
-
-              for( var i in stories ){
-                html += '<a href="/stories/' + stories[ i ].id + '" data-created="' + stories[i].created_at  + '" class="item">' +
-                  '<div class="left floated ui star rating active">' +
-                    '<i class="icon"></i>' +
+            for( var i in stories ){
+              html += '<a href="/stories/' + stories[ i ].id + '" data-created="' + stories[i].created_at  + '" class="item">' +
+                '<div class="left floated ui star rating active">' +
+                  '<i class="icon"></i>' +
                   '</div>' +
-                  '<div class="right floated date">' + stories[i].time_elapsed + '</div>' +
-                  '<div class="description">' + stories[i].body.substr(0,50) + '...</div>' +
+                '<div class="right floated date">' + stories[i].time_elapsed + '</div>' +
+                '<div class="description">' + stories[i].body.substr(0,50) + '...</div>' +
                 '</a>';
-              }
+            }
 
-              $( '.tab[data-tab="' + container + '"] .container' ).html( html );
-              element.attr( 'href', '/stories/?page=' + ( STORIES_CURRENT_PAGE - 1 ) );
+            $( '.tab[data-tab="' + container + '"] .container' ).html( html );
+            element.attr( 'href', url + ( loaded_page - 2 ) );
+            element.next().attr( 'href', url + ( loaded_page ) );
 
-              if( current_page == 1 ){
-                element.addClass( 'disabled' );
-              }
+            if( current_page < total_pages ){
+              element.next().removeClass( 'disabled' );
+            }
 
-              if( current_page < total_pages ){
-                $( 'a.next' ).removeClass( 'disabled' );
-              }
-              console.log( 'Estas en la pagina inicial' );
-              if( STORIES_CURRENT_PAGE <= 1 ){
-                element.addClass( 'disabled' );
-              }
+            if( current_page <= 1 ){
+              element.addClass( 'disabled' );
+            }
 
           }
         })
