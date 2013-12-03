@@ -7,7 +7,9 @@ class DashboardController < ApplicationController
     @first_exts = Extend.order( 'extends.created_at DESC' ).where( story: @first ).paginate( :page => params[:page], :per_page => 5 )
     
     @follower = @first.followers.find_by( user: current_user, story: @first )
-    puts @follower.nil?
+
+    puts 'INVITACIONES'
+    puts current_user.invitations.count
 
     @active = ( @follower.nil? == false )? 'active':''
 
