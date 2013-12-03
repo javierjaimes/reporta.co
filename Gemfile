@@ -27,8 +27,9 @@ gem 'turbolinks'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 1.2'
 
-# Use devise as authentication for the website
+# Use devise as authentication for the website and invitations-only
 gem "devise", "~> 3.1.1"
+gem "devise_invitable", "~> 1.3.1"
 
 # Use redis for realtime behavior
 gem "redis", "~> 3.0.5"

@@ -18,6 +18,11 @@
         <i class="edit icon"></i> Perfil
       </a>
 
+      <%= link_to( new_user_invitation_path(), :class => 'item' ) do %>
+        <i class="users icon"></i> Invitar a un amigo
+        <span class="ui label">11</span>
+      <% end %>
+
       <%= link_to( new_story_path(), :data => { 'fancybox-type' => "iframe"}, :class => 'fancy item' ) do %>
         <i class="add icon"></i> Nueva
       <% end %>

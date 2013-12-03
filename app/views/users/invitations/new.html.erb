@@ -1,0 +1,29 @@
+<div class="center aligned ui page grid segment">
+    <div class="six wide column">
+
+      <div class="ui form segment">
+        <h2 class="left aligned ui header"><%= t "Invitar a un amigo!" %></h2>
+
+        <%= form_for resource, :as => resource_name, :url => invitation_path(resource_name), :html => {:method => :post} do |f| %>
+          <%= devise_error_messages! %>
+
+          <div class="field">
+            <div class="ui left labeled icon input">
+        <% resource.class.invite_key_fields.each do |field| -%>
+          <%= f.text_field field, :placeholder => 'email@email.com' %>
+        <% end -%>
+            <i class="mail outline icon"></i>
+            </div>
+          </div>
+        <div class="left aligned field">
+          <%= f.button :type => "submit", :class=>"ui teal right labeled icon button" do %>
+            Enviar Invitac&oacute;n
+            <i class="right long arrow icon"></i>
+          <% end %>
+        </div>
+
+        <% end %>
+
+    </div>
+  </div>
+</div>
