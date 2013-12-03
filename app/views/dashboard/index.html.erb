@@ -80,8 +80,9 @@
     </div>
 
   </div>
-  <div class="nine wide right column">
-    <div class="story">
+  <div class="nine wide right column" style="position: relative;">
+    <div id="loader_story" class="ui active inverted "><div class="ui large text loader">Cargando Historia</div></div>
+    <div class="story" style="position: relative;">
       <h1 class="ui header"><%= @first.body[0..50] %>...</h1>
       <div class="ui divider"></div>
       <%= link_to 'Ampliar', extend_story_path( @first ), :data => { 'fancybox-type' => "iframe"}, :class=>'fancy circular ui basic button' %>
@@ -523,6 +524,7 @@
 
         $( 'a.story.item' ).removeClass( 'active' );
         $( this ).addClass( 'active' );
+        $( '#loader_story' ).addClass( 'dimmer' );
 
         $.ajax({ 
           url: '/stories/' + story,
@@ -530,6 +532,9 @@
           dataType: 'json',
           success: function( data ){
             console.log( data );
+
+            $( '#loader_story' ).removeClass( 'dimmer' );
+
             var story = data;
             var active = ( story.following != false )? 'active':'';
             var label = ( story.following != false )? ' Detener':' Seguir';
