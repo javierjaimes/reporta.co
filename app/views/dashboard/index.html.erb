@@ -35,7 +35,7 @@
             <i class="left arrow icon"></i>
           <% end %>
         <% end %>
-        <% if @stories.current_page < @first_exts.total_pages %>
+        <% if @stories.current_page < @stories.total_pages %>
           <%= link_to "#{stories_path()}?page=#{@stories.current_page+1}", :class => 'next ui button', :data => { :filter => 'false', :container => 'unread' } do  %>
             <i class="right arrow icon"></i>
           <% end %>
@@ -60,12 +60,12 @@
         <% end %>
         </div>
         <div class="ui icon buttons">
-        <% if @stories.current_page <= 1 %>
+        <% if @following.current_page <= 1 %>
           <%= link_to "#{stories_path()}?filter=following&page=#{@stories.current_page}", :class => 'previous ui disabled button', :data => { :filter => 'following', :container => 'saved' } do  %>
             <i class="left arrow icon"></i>
           <% end %>
         <% end %>
-        <% if @stories.current_page < @first_exts.total_pages %>
+        <% if @following.current_page < @following.total_pages %>
           <%= link_to "#{stories_path()}?filter=following&page=#{@stories.current_page+1}", :class => 'next ui button', :data => { :filter => 'following', :container => 'saved' } do  %>
             <i class="right arrow icon"></i>
           <% end %>
@@ -521,6 +521,9 @@
         event.preventDefault();
         var story = $( this ).data( 'story' );
 
+        $( 'a.story.item' ).removeClass( 'active' );
+        $( this ).addClass( 'active' );
+
         $.ajax({ 
           url: '/stories/' + story,
           method: 'GET',
@@ -531,12 +534,13 @@
             var active = ( story.following != false )? 'active':'';
             var label = ( story.following != false )? ' Detener':' Seguir';
             var url_follower = ( story.following != false )? '/followers/' + story.following : '/followers';
+            var following = ( story.following != false )? true : false;
             var visible = ( story.following != false )? 'display:inline;':'display:none;';
 
             var html = '<h1 class="ui header">' + story.body.substr(0,50) + '...</h1>' +
               '<div class="ui divider"></div>' +
               '<a href="/stories/' + story.id + '/new" data-fancybox-type="iframe" class="fancy circular ui basic button">Ampliar</a>' +
-              '  <a href="' + url_follower + '" data-story="' + story.id + '" data-following="' + story.following + '" class="follow circular ui basic toggle button ' + active + '"><i class="bullhorn icon"></i>' + label + '</a>' +
+              '  <a href="' + url_follower + '" data-story="' + story.id + '" data-following="' + following + '" class="follow circular ui basic toggle button ' + active + '"><i class="bullhorn icon"></i>' + label + '</a>' +
               '  <button class=" notifier circular ui icon basic button" data-notifier="' + story.id + '" style="position:relative; ' + visible + '">' +
                 '<i class="refresh icon"></i>' +
                 '<div class="circular floating ui teal label" style="display: none;">0</div>' +
@@ -573,6 +577,7 @@
             $( 'div.story' ).html( html );
 
             $( 'a.follow' ).on( 'click', follow_callback );
+
             $('.extends').infinitescroll({
               navSelector  : ".extends div.paginate",
               nextSelector : ".extends div.paginate a:first",
