@@ -50,7 +50,7 @@
       <% if !@following.nil? %>
         <div class="container">
         <% @following.each_with_index do | follow, key | %>
-          <%= link_to( story_path( follow.story ), :data => { created: follow.story.created_at.to_s }, :class => is_active( key ) + ' item' )  do %>
+          <%= link_to( story_path( follow.story ), :data => { story: follow.story.id, created: follow.story.created_at.to_s }, :class => is_active( key ) + ' story item' )  do %>
             <div class="left floated ui star rating active">
               <i class="icon"></i>
             </div>
@@ -97,10 +97,17 @@
       <div class="ui divider"></div>
 
       <div class="extends" data-story="<%= @first.id  %>">
-        <% @first_exts.each do | extend | %>
+        <% if @first_exts.count > 0 %>
+          <% @first_exts.each do | extend | %>
+            <div class="ui raised segment">
+              <div class="ui ribbon label"><%= time_elapsed( extend.created_at ) %></div>
+              <p><%= extend.body %> por <%= (@first.user.name.nil? == true )? 'Jhon Doe':@first.user.name  %></p>
+            </div>
+          <% end %>
+        <% else %>
           <div class="ui raised segment">
-            <div class="ui ribbon label"><%= time_elapsed( extend.created_at ) %></div>
-            <p><%= extend.body %> por <%= extend.user.name %></p>
+            <div class="ui ribbon label"><%= time_elapsed( @first.created_at ) %></div>
+            <p><%= @first.body %> por <%= (@first.user.name.nil? == true )? 'Jhon Doe':@first.user.name  %></p>
           </div>
         <% end %>
         <div class="paginate">

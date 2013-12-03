@@ -3,6 +3,10 @@ Reportaco::Application.routes.draw do
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
+  get 'what' => 'pages#what'
+  get 'who' => 'pages#who'
+  get 'how' => 'pages#how'
+
   post 'stories/latest' => 'refresh#stories'
   post 'stories/:id/latest' => 'refresh#following'
 

@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>Reportaco</title>
+    <%= stylesheet_link_tag    "http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700|Open+Sans:300italic,400,300,700" %>
     <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
     <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
     <%= csrf_meta_tags %>
@@ -46,9 +47,9 @@
           <div class="column">
             <div class="ui header">Acerca de</div>
             <div class="ui inverted link list">
-              <a class="item">Que es?</a>
-              <a class="item">Como funciona?</a>
-              <a class="item">QUienes somos?</a>
+              <%= link_to '¿Que es?', what_path(), :class => 'item' %>
+              <%= link_to '¿Quiénes somos?', who_path(), :class => 'item' %>
+              <%= link_to 'Y... ¿Como funciona?', how_path(), :class => 'item' %>
             </div>
           </div>
         </div>
@@ -60,6 +61,7 @@
         Barrio La Patria, Bogota <br>
         </addr>
         <p>+57 (304) 438-1074</p>
+        <p>hola@reporta.co</p>
       </div>
     </div>
 
