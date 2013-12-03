@@ -14,8 +14,9 @@ class StoriesController < ApplicationController
   # GET /stories/1
   # GET /stories/1.json
   def show
-    @follower = @story.followers.find_by( user: current_user, story: @story )
-    @new_follower = @story.followers.build if @follower.nil?
+    @extends  = Extend.includes( :user ).limit(10).where( story: @story ).paginate( page: params[:page], per_page: 10 ) 
+    @following = Follower.find_by( user: current_user, story: @story )
+    puts @following
   end
 
   # GET /stories/new
@@ -75,7 +76,7 @@ class StoriesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_story
-      @story = Story.includes(:extends).find(params[:id])
+      @story = Story.includes(:user, :extends).find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

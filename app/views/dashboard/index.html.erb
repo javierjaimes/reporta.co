@@ -81,33 +81,35 @@
 
   </div>
   <div class="nine wide right column">
-    <h1 class="ui header"><%= @first.body[0..50] %>...</h1>
-    <div class="ui divider"></div>
-    <%= link_to 'Ampliar', extend_story_path( @first ), :data => { 'fancybox-type' => "iframe"}, :class=>'fancy circular ui basic button' %>
-    <%= link_to follower_path( @follower ), :data => { :story => @first.id, :following => ( @active == 'active' )? 'true':'false' }, :class=>'follow circular ui basic toggle button ' + @active do %>
-      <i class="bullhorn icon"></i>
-      <%= (@active == 'active')? 'Detener':'Seguir' %>
-    <% end %>
-    <button class=" notifier circular ui icon basic button" data-notifier="<%= @first.id %>" style="position:relative; <%= ( @active == 'active' )? '':'display:none;'  %>">
-      <i class="refresh icon"></i>
-      <div class="circular floating ui teal label" style="display: none;">0</div>
-    </button>
-    <div class="ui divider"></div>
-
-    <div class="extends" data-story="<%= @first.id  %>">
-      <% @first_exts.each do | extend | %>
-        <div class="ui raised segment">
-          <div class="ui ribbon label"><%= time_elapsed( extend.created_at ) %></div>
-          <p><%= extend.body %> por <%= extend.user.name %></p>
-        </div>
+    <div class="story">
+      <h1 class="ui header"><%= @first.body[0..50] %>...</h1>
+      <div class="ui divider"></div>
+      <%= link_to 'Ampliar', extend_story_path( @first ), :data => { 'fancybox-type' => "iframe"}, :class=>'fancy circular ui basic button' %>
+      <%= link_to follower_path( @follower ), :data => { :story => @first.id, :following => ( @active == 'active' )? 'true':'false' }, :class=>'follow circular ui basic toggle button ' + @active do %>
+        <i class="bullhorn icon"></i>
+        <%= (@active == 'active')? 'Detener':'Seguir' %>
       <% end %>
-      <div class="paginate">
-        <% if @first_exts.current_page < @first_exts.total_pages %>
-           <%= link_to "Siguiente", "#{paginate_extends_story_path(@first)}?page=#{@first_exts.current_page+1}"  %>
-         <% end %>
-       </div>
-    </div>
+      <button class=" notifier circular ui icon basic button" data-notifier="<%= @first.id %>" style="position:relative; <%= ( @active == 'active' )? '':'display:none;'  %>">
+        <i class="refresh icon"></i>
+        <div class="circular floating ui teal label" style="display: none;">0</div>
+      </button>
+      <div class="ui divider"></div>
 
+      <div class="extends" data-story="<%= @first.id  %>">
+        <% @first_exts.each do | extend | %>
+          <div class="ui raised segment">
+            <div class="ui ribbon label"><%= time_elapsed( extend.created_at ) %></div>
+            <p><%= extend.body %> por <%= extend.user.name %></p>
+          </div>
+        <% end %>
+        <div class="paginate">
+          <% if @first_exts.current_page < @first_exts.total_pages %>
+             <%= link_to "Siguiente", "#{paginate_extends_story_path(@first)}?page=#{@first_exts.current_page+1}"  %>
+           <% end %>
+         </div>
+      </div>
+
+    </div>
   </div>
 </div>
 
@@ -256,10 +258,9 @@
         })
     })
 
-    $( '.follow' ).click( function( event ){
-
-
+    function follow_callback( event ){
       event.preventDefault();
+
       var element = $( this );
       var story = element.data( 'story' );
       var following = element.attr( 'data-following' );
@@ -309,8 +310,8 @@
           }
         })
       }
-
-    })
+    }
+    $( 'a.follow' ).on( 'click', follow_callback );
 
     function update_time( collection ){
       console.log( 'update time' );
@@ -364,24 +365,10 @@
       $('.ui.sidebar')
         .sidebar('attach events', '.launch.button');
 
-      $('.extends').infinitescroll({
-        navSelector  : ".extends div.paginate",
-        // selector for the paged navigation (it will be hidden)
-        nextSelector : ".extends div.paginate a:first",
-        // default: false
-        loadingText  : "Loading new posts...", 
-        dataType: 'json',
-        appendCallback: false,
-        animate: true,
-        //extraScrollPx: 650,
-        debug : false
-         // enable debug messaging ( to console.log )
-       }, function( json, opt ){
-        console.log( 'Cargo', json );
+      //Scroll CallBack
+      function scroll_callback( json, opt ){
         var exts = json.data;
         if ( json.current_page <= json.total_pages ){
-          //$( '.seven' ).css({ position:'fixed', background: '#fff' })
-          //$( '.extends' ).parents( '.nine' ).addClass( 'right floated' );
 
           for( var i in exts ){
             var html = '<div class="ui raised segment">' +
@@ -393,7 +380,16 @@
         }else{
           console.log( 'Ya termino el pager' );
         }
-      });
+      }
+
+      $('.extends').infinitescroll({
+        navSelector  : ".extends div.paginate",
+        nextSelector : ".extends div.paginate a:first",
+        loadingText  : "Loading new posts...", 
+        dataType: 'json',
+        appendCallback: false,
+        animate: true,
+       }, scroll_callback );
 
 
       //parse href attribute for get valus
@@ -523,7 +519,73 @@
 
       $( 'a.story' ).on( 'click', function( event ){
         event.preventDefault();
-        console.log( 'click to load a new story' )  ;
+        var story = $( this ).data( 'story' );
+
+        $.ajax({ 
+          url: '/stories/' + story,
+          method: 'GET',
+          dataType: 'json',
+          success: function( data ){
+            console.log( data );
+            var story = data;
+            var active = ( story.following != false )? 'active':'';
+            var label = ( story.following != false )? ' Detener':' Seguir';
+            var url_follower = ( story.following != false )? '/followers/' + story.following : '/followers';
+            var visible = ( story.following != false )? 'display:inline;':'display:none;';
+
+            var html = '<h1 class="ui header">' + story.body.substr(0,50) + '...</h1>' +
+              '<div class="ui divider"></div>' +
+              '<a href="/stories/' + story.id + '/new" data-fancybox-type="iframe" class="fancy circular ui basic button">Ampliar</a>' +
+              '  <a href="' + url_follower + '" data-story="' + story.id + '" data-following="' + story.following + '" class="follow circular ui basic toggle button ' + active + '"><i class="bullhorn icon"></i>' + label + '</a>' +
+              '  <button class=" notifier circular ui icon basic button" data-notifier="' + story.id + '" style="position:relative; ' + visible + '">' +
+                '<i class="refresh icon"></i>' +
+                '<div class="circular floating ui teal label" style="display: none;">0</div>' +
+              '</button>' +
+              '<div class="ui divider"></div>'; 
+
+              var exts ='<div class="extends" data-story="' + story.id + '">';
+              var items = story.extends.data;
+              if( items.length > 0 ){
+                for( var i in items ){
+                  exts += '<div class="ui raised segment">' +
+                    '<div class="ui ribbon label">' + items[i].time_elapsed + '</div>' +
+                    '<p>' + items[i].body + '</p>' +
+                  '</div>';
+                }
+
+                exts += '<div class="paginate">';
+                if( story.extends.current_page < story.extends.total_pages ){
+                  exts += '<a href="/stories/'+ story.id +'/extends?page='+ (story.extends.current_page + 1) +'">Siguiente</a>';
+                }
+                exts += '</div>';
+              }else{
+
+                exts += '<div class="ui raised segment">' +
+                  '<div class="ui ribbon label">' + story.time_elapsed + '</div>' +
+                  '<p>' + story.body + '</p>' +
+                '</div>';
+              }
+              exts += '</div>';
+
+            html += exts;
+            html += '</div>';
+
+            $( 'div.story' ).html( html );
+
+            $( 'a.follow' ).on( 'click', follow_callback );
+            $('.extends').infinitescroll({
+              navSelector  : ".extends div.paginate",
+              nextSelector : ".extends div.paginate a:first",
+              loadingText  : "Loading new posts...", 
+              dataType: 'json',
+              appendCallback: false,
+              animate: true,
+             }, scroll_callback );
+
+          }
+        })
+
+        console.log( 'click to load a new story', story )  ;
       } )
 
 
