@@ -1,10 +1,10 @@
-
+require 'uri'
 if Rails.env.production? == false
   redis_host = 'localhost'
   redis_port = 6379
   redis_password = 'foobared'
 else
-  uri = URI.parse(URI.encode(ENV["REDISTOGO_URL"].strip)) 
+  uri = URI.parse(URI.encode(ENV["REDISTOGO_URL"])) 
   redis_host = uri.host
   redis_port = uri.port
   redis_password = uri.password
