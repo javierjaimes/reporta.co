@@ -32,4 +32,15 @@ Reportaco::Application.configure do
 
   # RealTime Server
   config.live_server = 'http://localhost:8080/'
+
+  # ActionMailer
+  config.action_mailer.smtp_settings = {
+    :address        => 'smtp.sendgrid.net',
+    :port           => '587',
+    :authentication => :plain,
+    :user_name      => ENV['SENDGRID_USERNAME'],
+    :password       => ENV['SENDGRID_PASSWORD'],
+    :domain         => 'heroku.com',
+    :enable_starttls_auto => true
+  }
 end
