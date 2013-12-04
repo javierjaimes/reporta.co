@@ -126,7 +126,7 @@
   <%= javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js" %>
   <%= javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/jquery.address/1.6/jquery.address.js" %>
   <%= javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.pack.js?v=2.1.5" %>
-  <script src="http://localhost:8080/socket.io/socket.io.js"></script>
+  <script src="<%= Rails.application.config.live_server %>socket.io/socket.io.js"></script>
   <script>
 
     //Set Up

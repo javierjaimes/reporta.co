@@ -85,4 +85,7 @@ Reportaco::Application.configure do
   config.redis_port = URI.parse(ENV["REDISTOGO_URL"]).port
   config.redis_host = URI.parse(ENV["REDISTOGO_URL"]).host
   config.redis_password = URI.parse(ENV["REDISTOGO_URL"]).password
+
+  # RealTime Server
+  config.live_server = 'http://live.reporta.co/'
 end

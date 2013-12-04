@@ -34,4 +34,7 @@ Reportaco::Application.configure do
   config.redis_port = 6379
   config.redis_host = '127.0.0.1'
   config.redis_password = 'foobared'
+
+  # RealTime Server
+  config.live_server = 'http://localhost:8080/'
 end
