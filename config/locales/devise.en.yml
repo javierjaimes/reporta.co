@@ -25,8 +25,8 @@ en:
       unlock_instructions:
         subject: "Unlock Instructions"
       invitation_instructions:
-        subject: 'El #twitter criollo'
-        user_subject: '@senorpasajero'
+        subject: '@senorpasajero'
+        user_subject: 'El #twitter criollo'
     omniauth_callbacks:
       failure: "Could not authenticate you from %{kind} because \"%{reason}\"."
       success: "Successfully authenticated from %{kind} account."
