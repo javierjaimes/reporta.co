@@ -29,4 +29,9 @@ Reportaco::Application.configure do
 
   # Devise configuration
   config.action_mailer.default_url_options = { :host => 'localhost:3000' }
+
+  # Redis Connection
+  config.redis_port = 6379
+  config.redis_host = '127.0.0.1'
+  config.redis_password = 'foobared'
 end
