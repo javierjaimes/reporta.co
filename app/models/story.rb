@@ -7,5 +7,5 @@ class Story < ActiveRecord::Base
   has_many :followers, inverse_of: :story
 
   validates :body, :user, presence: true
-  validates :body, length: { minimum:  10, maximun: 240 }
+  validates :body, length: { minimum:  100, maximun: 240 }
 end
