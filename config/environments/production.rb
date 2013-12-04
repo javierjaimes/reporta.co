@@ -79,7 +79,7 @@ Reportaco::Application.configure do
   config.log_formatter = ::Logger::Formatter.new
 
   # Devise configuration
-  config.action_mailer.default_url_options = { :host => 'localhost:3000' }
+  config.action_mailer.default_url_options = { :host => 'www.reporta.co' }
 
   # RealTime Server
   config.live_server = 'http://live.reporta.co/'
