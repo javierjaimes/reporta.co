@@ -4,7 +4,7 @@ if Rails.env.production? == false
   redis_port = 6379
   redis_password = 'foobared'
 else
-  uri = URI.parse(ENV["REDISTOGO_URL"])
+  uri = URI.parse( URI.encode(ENV["REDISTOGO_URL"]) )
   redis_host = uri.host
   redis_port = uri.port
   redis_password = uri.password
