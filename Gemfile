@@ -65,3 +65,6 @@ end
 # Use rails_12factor for deploy on heroku
 gem 'rails_12factor', group: :production
 
+# Use only for heroku
+ruby "2.0.0"
+
