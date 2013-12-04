@@ -1,8 +1,8 @@
 <p>Hola <%= @resource.email %>!</p>
 
-<p>Algun amigo te ha invitado a <%= root_url %>, una red de noticias locales como #twitter, Puedes aceptar la invitacion dando click en link a continuacion.</p>
+<p>Algun amigo te ha invitado a <%= root_url %>, una red de noticias locales como #twitter, Puedes aceptar la invitacion dando click en el link a continuacion.</p>
 
-<p><%= link_to 'Accept invitation', accept_invitation_url(@resource, :invitation_token => @token) %></p>
+<p><%= link_to 'Acceptar invitacion', accept_invitation_url(@resource, :invitation_token => @token) %></p>
 
 <p>Si no desea ser parte de esta majestuosa inicitavia, solo olvida el email y sigue usando #twitter.<br />
 Tu cuenta no sera creada si no digitas una clave.</p>
