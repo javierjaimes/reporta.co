@@ -140,7 +140,7 @@
     var extends_stories_for_load = [];
 
     var user = <%= current_user.id %>;
-    var socket = io.connect( 'http://localhost:8080' );
+    var socket = io.connect( '<%= Rails.application.config.live_server %>' );
     socket.on( 'welcome', function( data ){
       console.log( 'connect', data );
       stories = 0;
