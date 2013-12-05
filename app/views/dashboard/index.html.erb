@@ -101,7 +101,7 @@
           <% @first_exts.each do | extend | %>
             <div class="ui raised segment" data-extend="<%= extend.id %>">
               <div class="ui ribbon label"><%= time_elapsed( extend.created_at ) %></div>
-              <p><%= extend.body %> por <%= (@first.user.name.nil? == true )? 'Jhon Doe':@first.user.name  %></p>
+              <p><%= extend.body %> por <%= (extend.user.name.nil? == true )? 'Jhon Doe':extend.user.name  %></p>
             </div>
           <% end %>
         <% else %>
