@@ -99,7 +99,7 @@
       <div class="extends" data-story="<%= @first.id  %>">
         <% if @first_exts.count > 0 %>
           <% @first_exts.each do | extend | %>
-            <div class="ui raised segment">
+            <div class="ui raised segment" data-extend="<%= extend.id %>">
               <div class="ui ribbon label"><%= time_elapsed( extend.created_at ) %></div>
               <p><%= extend.body %> por <%= (@first.user.name.nil? == true )? 'Jhon Doe':@first.user.name  %></p>
             </div>
