@@ -1,28 +1,8 @@
-== README
+== REPORTA.co
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+The idea of reporta.co was to help the people to build stories around the city, like a news feed on real time but made by the citizens.
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+The app included: A ruby app (The client) and the real time server written in NodeJS.
 
 
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+Stack: Ruby, Ruby On Rails, Redis
